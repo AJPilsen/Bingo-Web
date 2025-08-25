@@ -3,127 +3,207 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Login y Registro</title>
+<title>Autenticación Netlify Identity</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
+  html, body {
+    height: 100%;
     margin: 0;
-    padding: 0;
+    font-family: Arial, sans-serif;
+    color: white;
   }
-  .container {
-    max-width: 400px;
-    margin: 50px auto;
-    background: white;
+  body {
+    background-image: url('https://plus.unsplash.com/premium_photo-1717810866948-5f975ec7fa36?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .auth-container {
+    background-color: rgba(0,0,0,0.7);
+    width: 350px;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 12px;
+    box-sizing: border-box;
   }
   h2 {
     text-align: center;
     margin-bottom: 20px;
   }
-  .tabs {
-    display: flex;
-    margin-bottom: 20px;
-    cursor: pointer;
-  }
-  .tab {
-    flex: 1;
-    padding: 10px 0;
-    text-align: center;
-    background: #ddd;
-    border-radius: 8px 8px 0 0;
-  }
-  .tab.active {
-    background: #007bff;
-    color: white;
-  }
-  form {
-    display: none;
-  }
-  form.active {
-    display: block;
-  }
   label {
     display: block;
-    margin-top: 10px;
+    margin-top: 12px;
+    font-weight: bold;
   }
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="tel"] {
+  input {
     width: 100%;
     padding: 8px;
-    margin-top: 4px;
-    box-sizing: border-box;
+    margin-top: 6px;
+    border-radius: 5px;
+    border: none;
   }
   button {
-    margin-top: 20px;
     width: 100%;
-    background: #007bff;
-    color: white;
-    padding: 10px;
+    margin-top: 20px;
+    background-color: #00aaff;
     border: none;
-    border-radius: 8px;
+    color: white;
     font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #008ecc;
+  }
+  .toggle-link {
+    color: #00aaff;
+    text-align: center;
+    margin-top: 15px;
+    cursor: pointer;
+    text-decoration: underline;
+    user-select: none;
+  }
+  #message {
+    margin-top: 15px;
+    text-align: center;
+    color: #ffcccb; /* light red for errors */
   }
 </style>
+
+<!-- Netlify Identity Widget -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
 </head>
 <body>
-  <div class="container">
-    <div class="tabs">
-      <div class="tab active" data-tab="login">Login</div>
-      <div class="tab" data-tab="register">Registrar</div>
+<div class="auth-container">
+
+  <h2 id="form-title">Ingresar</h2>
+  
+  <form id="auth-form">
+    <div id="registration-fields" style="display:none;">
+      <label for="first-name">Nombre</label>
+      <input type="text" id="first-name" name="first-name" />
+      
+      <label for="last-name">Apellido</label>
+      <input type="text" id="last-name" name="last-name" />
+      
+      <label for="telegram">Número de Telegram</label>
+      <input type="tel" id="telegram" name="telegram" />
     </div>
     
-    <form id="login" class="active">
-      <h2>Iniciar sesión</h2>
-      <label for="login-email">Correo electrónico:</label>
-      <input type="email" id="login-email" required />
-      <label for="login-password">Contraseña:</label>
-      <input type="password" id="login-password" required />
-      <button type="submit">Ingresar</button>
-    </form>
+    <label for="email">Correo electrónico</label>
+    <input type="email" id="email" name="email" required />
     
-    <form id="register">
-      <h2>Registrar cuenta</h2>
-      <label for="reg-nombre">Nombre:</label>
-      <input type="text" id="reg-nombre" required />
-      <label for="reg-apellido">Apellido:</label>
-      <input type="text" id="reg-apellido" required />
-      <label for="reg-email">Correo electrónico:</label>
-      <input type="email" id="reg-email" required />
-      <label for="reg-password">Contraseña:</label>
-      <input type="password" id="reg-password" required />
-      <label for="reg-password-repeat">Repetir contraseña:</label>
-      <input type="password" id="reg-password-repeat" required />
-      <label for="reg-telegram">Número de teléfono de Telegram:</label>
-      <input type="tel" id="reg-telegram" required pattern="[0-9]+" />
-      <button type="submit">Registrar</button>
-    </form>
-  </div>
+    <label for="password">Contraseña</label>
+    <input type="password" id="password" name="password" required />
+    
+    <div id="repeat-password-container" style="display:none;">
+      <label for="repeat-password">Repetir Contraseña</label>
+      <input type="password" id="repeat-password" name="repeat-password" />
+    </div>
+    
+    <button type="submit" id="submit-button">Ingresar</button>
+  </form>
+  
+  <div class="toggle-link" id="toggle-link">¿No tienes cuenta? Regístrate</div>
+  <div id="message"></div>
+  
+</div>
 
-  <script>
-    // Código para cambiar pestañas entre login y registro
-    const tabs = document.querySelectorAll('.tab');
-    const forms = document.querySelectorAll('form');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        forms.forEach(f => f.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
-      });
-    });
+<script>
+  const netlifyIdentity = window.netlifyIdentity;
+  netlifyIdentity.init();
 
-    // Aquí puedes agregar validaciones y manejo de formularios con JavaScript si quieres
-    // Por ahora solo evitamos que el formulario haga reload de la página
-    document.querySelectorAll('form').forEach(form => {
-      form.addEventListener('submit', e => {
-        e.preventDefault();
-        alert('Formulario enviado (esto es solo un ejemplo).');
-      });
-    });
-  </script>
+  const authForm = document.getElementById('auth-form');
+  const toggleLink = document.getElementById('toggle-link');
+  const messageDiv = document.getElementById('message');
+  const registrationFields = document.getElementById('registration-fields');
+  const repeatPasswordContainer = document.getElementById('repeat-password-container');
+  const formTitle = document.getElementById('form-title');
+  const submitButton = document.getElementById('submit-button');
+
+  let isLogin = true;
+
+  toggleLink.addEventListener('click', () => {
+    isLogin = !isLogin;
+    if (isLogin) {
+      formTitle.textContent = 'Ingresar';
+      submitButton.textContent = 'Ingresar';
+      toggleLink.textContent = '¿No tienes cuenta? Regístrate';
+      registrationFields.style.display = 'none';
+      repeatPasswordContainer.style.display = 'none';
+      clearMessage();
+    } else {
+      formTitle.textContent = 'Registrar';
+      submitButton.textContent = 'Registrarse';
+      toggleLink.textContent = '¿Ya tienes cuenta? Inicia sesión';
+      registrationFields.style.display = 'block';
+      repeatPasswordContainer.style.display = 'block';
+      clearMessage();
+    }
+    authForm.reset();
+  });
+
+  authForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearMessage();
+
+    const email = authForm.email.value.trim();
+    const password = authForm.password.value;
+    
+    if (isLogin) {
+      // Login flow
+      netlifyIdentity.login(email, password)
+      .then(() => {
+        messageDiv.style.color = '#90ee90'; // light green success
+        messageDiv.textContent = `Bienvenido ${email}! Has iniciado sesión.`;
+        // Aquí puedes redirigir o mostrar contenido privado
+      })
+      .catch(err => showError(err));
+    } else {
+      // Registration flow
+      const repeatPassword = authForm['repeat-password'].value;
+      const firstName = authForm['first-name'].value.trim();
+      const lastName = authForm['last-name'].value.trim();
+      const telegram = authForm['telegram'].value.trim();
+
+      // Basic validation
+      if (!firstName || !lastName || !email || !password || !repeatPassword || !telegram) {
+        showError('Todos los campos son obligatorios para registrarse.');
+        return;
+      }
+      if (password !== repeatPassword) {
+        showError('Las contraseñas no coinciden.');
+        return;
+      }
+
+      netlifyIdentity.signup(email, password, {
+        first_name: firstName,
+        last_name: lastName,
+        telegram: telegram
+      })
+      .then(() => {
+        messageDiv.style.color = '#90ee90';
+        messageDiv.textContent = 'Registro exitoso. Por favor revisa tu correo para confirmar tu cuenta.';
+        authForm.reset();
+        // Puedes pasar a modo login después de registro:
+        toggleLink.click();
+      })
+      .catch(err => showError(err));
+    }
+  });
+
+  function showError(err) {
+    messageDiv.style.color = '#ffcccb';
+    messageDiv.textContent = typeof err === 'string' ? err : err.message || 'Error inesperado';
+  }
+
+  function clearMessage() {
+    messageDiv.textContent = '';
+  }
+
+</script>
 </body>
 </html>
